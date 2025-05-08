@@ -88,5 +88,22 @@
     <!-- static camera that moves according to the device movemenents -->
     <a-entity camera></a-entity>
   </a-scene>
+
+  <script>
+    // Loader elementini seç
+    const loader = document.querySelector('.arjs-loader');
+
+    // NFT yüklendiğinde loader'ı gizle
+    window.addEventListener('arjs-nft-loaded', (ev) => {
+      loader.style.display = 'none';
+      console.log('NFT marker başarıyla yüklendi!', ev.detail);
+    });
+
+    // Hata durumunda loader'ı gizleme
+    window.addEventListener('arjs-nft-error', (ev) => {
+      console.error('NFT yüklenirken hata oluştu:', ev.detail);
+      loader.innerHTML = '<div>Hata! Marker yüklenemedi</div>';
+    });
+  </script>
 </body>
 </html>
