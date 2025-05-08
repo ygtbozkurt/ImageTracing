@@ -75,15 +75,21 @@
       smooth="true"
       smoothCount="10"
       smoothTolerance=".01"
-      smoothThreshold="5"
-    >
+      smoothThreshold="5">
+        <a-box 
+            color="#4CC3D9" 
+            scale="0.5 0.5 0.5" 
+            position="0 0.25 0"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
+        </a-box>
       <!-- as a child of the a-nft entity, you can define the content to show. here's a GLTF model entity -->
-      <a-entity
+      <!-- <a-entity
         gltf-model="model/model.glb"
         scale="5 5 5"
         position="50 150 0"
       >
       </a-entity>
+       -->
     </a-nft>
     <!-- static camera that moves according to the device movemenents -->
     <a-entity camera></a-entity>
