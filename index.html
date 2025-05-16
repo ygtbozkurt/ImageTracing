@@ -4,8 +4,6 @@
     <meta charset="utf-8" />
     <title>AR.js Marker Tracking Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    
-    <!-- A-Frame ve AR.js script'leri -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/1.7.2/aframe/build/aframe-ar.js"></script>
 
@@ -35,17 +33,14 @@
       vr-mode-ui="enabled: false"
       renderer="logarithmicDepthBuffer: true;">
       
-      <!-- Marker tanımı (custom .patt dosyası) -->
-      <a-marker type="pattern" url="marker.patt">
-        <!-- 3D model gösterimi -->
+      <a-marker type="pattern" url="pattern-marker.patt">
         <a-entity
-          gltf-model="cube.gltf"
-          scale="0.5 0.5 0.5"
+          gltf-model="model/cube.gltf"
+          scale="0.2 0.2 0.2"
           position="0 0 0">
         </a-entity>
       </a-marker>
 
-      <!-- Kamera -->
       <a-entity camera></a-entity>
     </a-scene>
 
