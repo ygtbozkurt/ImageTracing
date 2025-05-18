@@ -5,58 +5,74 @@
     <title>AR.js Çoklu Marker + Gesture</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     
-    <!-- Kütüphaneler -->
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/1.7.2/aframe/build/aframe-ar.js"></script>
+    <!-- Güncel Kütüphaneler -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-gesture-detector@1.1.3/dist/aframe-gesture-detector.min.js"></script>
 
     <style>
         .arjs-loader {
             height: 100%;
             width: 100%;
-            position: absolute;
+            position: fixed;
             background: rgba(0, 0, 0, 0.8);
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
+            font-family: Arial;
         }
 
         a-scene {
-            touch-action: none; /* Mobil dokunmatik için önemli */
+            touch-action: none;
         }
     </style>
 
-    <!-- Gesture Handler Script -->
+    <!-- Geliştirilmiş Gesture Handler -->
     <script>
         AFRAME.registerComponent('gesture-handler', {
             init: function() {
-                this.scaleFactor = 1;
+                this.initialScale = this.el.getAttribute('scale').clone();
+                this.isDragging = false;
                 const el = this.el;
 
-                // Rotasyon için tek parmak
-                el.addEventListener('onefingermove', (evt) => {
-                    let rotation = el.getAttribute('rotation');
+                // Döndürme
+                el.addEventListener('onefingermove', (e) => {
+                    if(this.isDragging) return;
+                    const rotation = el.getAttribute('rotation');
                     el.setAttribute('rotation', {
+                        y: rotation.y + e.detail.positionChange.x * 3,
                         x: rotation.x,
-                        y: rotation.y + evt.detail.positionChange.x * 2,
                         z: rotation.z
                     });
                 });
 
-                // Zoom için iki parmak
+                // Zoom
                 el.addEventListener('twofingerstart', () => {
-                    this.scaleFactor = el.getAttribute('scale').x;
+                    this.scaleFactor = el.getAttribute('scale').x / this.initialScale.x;
                 });
 
-                el.addEventListener('twofingermove', (evt) => {
-                    this.scaleFactor *= 1 + (evt.detail.spreadChange / 200);
+                el.addEventListener('twofingermove', (e) => {
+                    this.scaleFactor *= 1 + (e.detail.spreadChange / 200);
                     this.scaleFactor = Math.min(Math.max(0.2, this.scaleFactor), 5);
                     el.setAttribute('scale', {
-                        x: this.scaleFactor,
-                        y: this.scaleFactor,
-                        z: this.scaleFactor
+                        x: this.initialScale.x * this.scaleFactor,
+                        y: this.initialScale.y * this.scaleFactor,
+                        z: this.initialScale.z * this.scaleFactor
+                    });
+                });
+
+                // Taşıma
+                el.addEventListener('grab-start', () => this.isDragging = true);
+                el.addEventListener('grab-end', () => this.isDragging = false);
+                el.addEventListener('pan', (e) => {
+                    if(!this.isDragging) return;
+                    const position = el.getAttribute('position');
+                    el.setAttribute('position', {
+                        x: position.x + e.detail.deltaX * 0.01,
+                        y: position.y - e.detail.deltaY * 0.01,
+                        z: position.z
                     });
                 });
             }
@@ -65,52 +81,53 @@
 </head>
 
 <body>
-    <div class="arjs-loader">AR deneyimi yükleniyor...</div>
+    <div class="arjs-loader">AR deneyimi başlatılıyor...</div>
 
     <a-scene 
         embedded 
-        arjs="sourceType: webcam; debugUIEnabled: false;" 
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
         vr-mode-ui="enabled: false"
         gesture-detector
         cursor="rayOrigin: mouse">
 
-        <!-- Marker 1 -->
-        <a-marker type="pattern" url="pattern/pattern-marker.patt">
+        <!-- Tüm Marker'lar -->
+        <!-- Marker 1 - Ana Küp -->
+        <a-marker type="pattern" url="pattern-marker.patt">
             <a-entity
                 gltf-model="model/cube.gltf"
                 scale="0.5 0.5 0.5"
-                position="0 0 0"
+                position="0 0.1 0"
                 gesture-handler>
             </a-entity>
         </a-marker>
 
-        <!-- Marker 2 -->
-        <a-marker type="pattern" url="pattern/pattern-CesmeAr.patt">
+        <!-- Marker 2 - Cesme Modeli -->
+        <a-marker type="pattern" url="pattern-CesmeAr.patt">
             <a-entity
                 gltf-model="model/untitled2.gltf"
                 scale="0.2 0.2 0.2"
-                position="0 0 0"
+                position="0 0.15 0"
                 gesture-handler>
             </a-entity>
         </a-marker>
 
-        <!-- Marker 3 -->
-        <a-marker type="pattern" url="pattern/pattern-ArrowUp.patt">
+        <!-- Marker 3 - Ok Modeli -->
+        <a-marker type="pattern" url="pattern-ArrowUp.patt">
             <a-entity
-                gltf-model="model/cube.glb"
-                scale="0.2 0.2 0.2"
-                position="0 0 0"
+                gltf-model="model/untitled2.glb"
+                scale="0.3 0.3 0.3"
+                position="0 0.1 0"
+                rotation="0 180 0"
                 gesture-handler>
             </a-entity>
         </a-marker>
-
+       
         <!-- Kamera -->
         <a-entity camera look-controls="enabled: false"></a-entity>
     </a-scene>
 
     <script>
-        // Yükleme ekranını gizle
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('arjs-nft-loaded', () => {
             document.querySelector('.arjs-loader').style.display = 'none';
         });
     </script>
