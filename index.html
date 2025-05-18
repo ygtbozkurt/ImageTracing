@@ -5,54 +5,13 @@
     <title>AR.js - Çoklu Marker + Gesture</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
-    <!-- A-Frame ve AR.js -->
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ar.js@3.4.2/aframe/build/aframe-ar-nft.min.js"></script>
-
-    <!-- Gesture Destek Bileşeni -->
-    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@6.1.1/dist/aframe-extras.controls.min.js"></script>
+    <!-- A-Frame & AR.js -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/1.7.2/aframe/build/aframe-ar.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-gesture-detector@3.3.0/dist/aframe-gesture-detector.min.js"></script>
-    <script>
-      // Basit gesture handler bileşeni
-      AFRAME.registerComponent("gesture-handler", {
-        schema: {
-          enabled: { default: true },
-        },
-        init: function () {
-          const el = this.el;
-          this.scaleFactor = 1;
-
-          el.sceneEl.addEventListener("onefingermove", (event) => {
-            if (!this.data.enabled) return;
-            const rotation = el.getAttribute("rotation");
-            if (!rotation) return;
-            el.setAttribute("rotation", {
-              x: rotation.x,
-              y: rotation.y - event.detail.positionChange.x * 2,
-              z: rotation.z,
-            });
-          });
-
-          el.sceneEl.addEventListener("twofingermove", (event) => {
-            if (!this.data.enabled) return;
-            this.scaleFactor *= 1 + event.detail.spreadChange / 200;
-            this.scaleFactor = Math.min(Math.max(this.scaleFactor, 0.1), 10);
-            el.setAttribute("scale", {
-              x: this.scaleFactor,
-              y: this.scaleFactor,
-              z: this.scaleFactor,
-            });
-          });
-        },
-      });
-    </script>
 
     <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-      }
+      body { margin: 0; overflow: hidden; }
       .arjs-loader {
         position: absolute;
         width: 100%;
@@ -66,6 +25,39 @@
         font-size: 1.2em;
       }
     </style>
+
+    <!-- Gesture handler script -->
+    <script>
+      AFRAME.registerComponent('gesture-handler', {
+        schema: { enabled: { default: true } },
+        init: function () {
+          const el = this.el;
+          this.scaleFactor = 1;
+
+          el.sceneEl.addEventListener('onefingermove', (event) => {
+            if (!this.data.enabled) return;
+            const rotation = el.getAttribute('rotation');
+            if (!rotation) return;
+            el.setAttribute('rotation', {
+              x: rotation.x,
+              y: rotation.y - event.detail.positionChange.x * 2,
+              z: rotation.z
+            });
+          });
+
+          el.sceneEl.addEventListener('twofingermove', (event) => {
+            if (!this.data.enabled) return;
+            this.scaleFactor *= 1 + event.detail.spreadChange / 200;
+            this.scaleFactor = Math.min(Math.max(this.scaleFactor, 0.1), 10);
+            el.setAttribute('scale', {
+              x: this.scaleFactor,
+              y: this.scaleFactor,
+              z: this.scaleFactor
+            });
+          });
+        }
+      });
+    </script>
   </head>
 
   <body>
@@ -77,61 +69,33 @@
       vr-mode-ui="enabled: false"
       renderer="logarithmicDepthBuffer: true;"
       gesture-detector
-      id="scene"
     >
-      <!-- MODELLER -->
-      <a-assets>
-        <a-asset-item id="model1" src="model/cube.gltf"></a-asset-item>
-        <a-asset-item id="model2" src="model/untitled2.gltf"></a-asset-item>
-      </a-assets>
-
-      <!-- Marker 1 -->
-      <a-marker
-        type="pattern"
-        url="pattern-marker.patt"
-        raycaster="objects: .clickable"
-        emitevents="true"
-        cursor="fuse: false; rayOrigin: mouse;"
-      >
+      <!-- 1. Marker: marker1.patt -->
+      <a-marker type="pattern" url="pattern-marker.patt">
         <a-entity
-          gltf-model="#model1"
+          gltf-model="model/cube.gltf"
           scale="0.5 0.5 0.5"
           position="0 0 0"
-          class="clickable"
           gesture-handler
         ></a-entity>
       </a-marker>
 
-      <!-- Marker 2 -->
-      <a-marker
-        type="pattern"
-        url="pattern-CesmeAr.patt"
-        raycaster="objects: .clickable"
-        emitevents="true"
-        cursor="fuse: false; rayOrigin: mouse;"
-      >
+      <!-- 2. Marker: pattern-CesmeAr.patt -->
+      <a-marker type="pattern" url="pattern-CesmeAr.patt">
         <a-entity
-          gltf-model="#model2"
+          gltf-model="model/untitled2.gltf"
           scale="0.2 0.2 0.2"
           position="0 0 0"
-          class="clickable"
           gesture-handler
         ></a-entity>
       </a-marker>
 
-      <!-- Marker 3 -->
-      <a-marker
-        type="pattern"
-        url="pattern-ArrowUp.patt"
-        raycaster="objects: .clickable"
-        emitevents="true"
-        cursor="fuse: false; rayOrigin: mouse;"
-      >
+      <!-- 3. Marker: pattern-ArrowUp.patt -->
+      <a-marker type="pattern" url="pattern-ArrowUp.patt">
         <a-entity
-          gltf-model="#model1"
+          gltf-model="model/cube.gltf"
           scale="0.2 0.2 0.2"
           position="0 0 0"
-          class="clickable"
           gesture-handler
         ></a-entity>
       </a-marker>
@@ -141,8 +105,8 @@
     </a-scene>
 
     <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        document.querySelector(".arjs-loader").style.display = "none";
+      window.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.arjs-loader').style.display = 'none';
       });
     </script>
   </body>
