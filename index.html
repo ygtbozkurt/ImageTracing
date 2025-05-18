@@ -8,6 +8,7 @@
     <!-- A-Frame & AR.js -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/1.7.2/aframe/build/aframe-ar.js"></script>
+    <script src="https://unpkg.com/aframe-gesture-detector@3.3.0/dist/aframe-gesture-detector.min.js"></script>
 
     <style>
       body { margin: 0; overflow: hidden; }
@@ -24,6 +25,33 @@
         font-size: 1.2em;
       }
     </style>
+
+    <script>
+      AFRAME.registerComponent("pinch-scale", {
+        schema: {
+          min: { type: "number", default: 0.1 },
+          max: { type: "number", default: 10 }
+        },
+        init: function () {
+          this.scaleFactor = 1;
+          this.el.sceneEl.addEventListener("onefingermove", this.onRotate.bind(this));
+          this.el.sceneEl.addEventListener("twofingermove", this.onPinch.bind(this));
+        },
+        onRotate: function (event) {
+          const rotation = this.el.getAttribute("rotation");
+          this.el.setAttribute("rotation", {
+            x: rotation.x,
+            y: rotation.y + event.detail.positionChange.x * 2,
+            z: rotation.z
+          });
+        },
+        onPinch: function (event) {
+          this.scaleFactor *= 1 + event.detail.spreadChange / 200;
+          this.scaleFactor = Math.min(Math.max(this.scaleFactor, this.data.min), this.data.max);
+          this.el.setAttribute("scale", `${this.scaleFactor} ${this.scaleFactor} ${this.scaleFactor}`);
+        }
+      });
+    </script>
   </head>
 
   <body>
@@ -37,30 +65,38 @@
     >
       <!-- 1. Marker: marker1.patt gösterildiğinde model1.glb -->
       <a-marker type="pattern" url="pattern-marker.patt">
-        <a-entity
-          gltf-model="model/cube.gltf"
-          scale="0.5 0.5 0.5"
-          position="0 0 0"
-        ></a-entity>
+        <a-entity gesture-detector>
+          <a-entity
+            gltf-model="model/cube.gltf"
+            scale="0.5 0.5 0.5"
+            position="0 0 0"
+            pinch-scale
+          ></a-entity>
+        </a-entity>
       </a-marker>
 
       <!-- 2. Marker: marker2.patt gösterildiğinde model2.glb -->
       <a-marker type="pattern" url="pattern-CesmeAr.patt">
-        <a-entity
-          gltf-model="model/untitled2.gltf"
-          scale="0.2 0.2 0.2"
-          position="0 0 0"
-        ></a-entity>
+        <a-entity gesture-detector>
+          <a-entity
+            gltf-model="model/untitled2.gltf"
+            scale="0.2 0.2 0.2"
+            position="0 0 0"
+            pinch-scale
+          ></a-entity>
+        </a-entity>
       </a-marker>
 
-      
-      <!-- 3. Marker: marker3.patt gösterildiğinde model2.glb -->
+      <!-- 3. Marker: marker3.patt gösterildiğinde model3.glb -->
       <a-marker type="pattern" url="pattern-ArrowUp.patt">
-        <a-entity
-          gltf-model="model/cube.gltf"
-          scale="0.2 0.2 0.2"
-          position="0 0 0"
-        ></a-entity>
+        <a-entity gesture-detector>
+          <a-entity
+            gltf-model="model/cube.gltf"
+            scale="0.2 0.2 0.2"
+            position="0 0 0"
+            pinch-scale
+          ></a-entity>
+        </a-entity>
       </a-marker>
 
       <!-- Kamera -->
