@@ -1,98 +1,76 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>AR.js Çoklu Marker + Gesture</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8" />
+    <title>AR.js - Çoklu Marker Örneği</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
-  <!-- Kütüphaneler -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/aframe-gesture-detector@1.1.3/dist/aframe-gesture-detector.min.js"></script>
-  <script src="gestures.js"></script> <!-- Gesture Component'ımız -->
+    <!-- A-Frame & AR.js -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/1.7.2/aframe/build/aframe-ar.js"></script>
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      width: 100%;
-      height: 100%;
-    }
+    <style>
+      body { margin: 0; overflow: hidden; }
+      .arjs-loader {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2em;
+      }
+    </style>
+  </head>
 
-    a-scene {
-      width: 100vw !important;
-      height: 100vh !important;
-      position: absolute;
-      top: 0;
-      left: 0;
-      touch-action: none;
-    }
+  <body>
+    <div class="arjs-loader">Yükleniyor...</div>
 
-    .arjs-loader {
-      position: fixed;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.8);
-      color: white;
-      z-index: 9999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: sans-serif;
-    }
-  </style>
-</head>
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+      vr-mode-ui="enabled: false"
+      renderer="logarithmicDepthBuffer: true;"
+    >
+      <!-- 1. Marker: marker1.patt gösterildiğinde model1.glb -->
+      <a-marker type="pattern" url="pattern-marker.patt">
+        <a-entity
+          gltf-model="model/cube.glb"
+          scale="0.5 0.5 0.5"
+          position="0 0 0"
+        ></a-entity>
+      </a-marker>
 
-<body>
-  <div class="arjs-loader">AR deneyimi başlatılıyor...</div>
+      <!-- 2. Marker: marker2.patt gösterildiğinde model2.glb -->
+      <a-marker type="pattern" url="pattern-CesmeAr.patt">
+        <a-entity
+          gltf-model="model/untitled2.glb"
+          scale="0.2 0.2 0.2"
+          position="0 0 0"
+        ></a-entity>
+      </a-marker>
 
-  <a-scene 
-    embedded 
-    arjs="sourceType: webcam; debugUIEnabled: false;"
-    vr-mode-ui="enabled: false"
-    gesture-detector
-    cursor="rayOrigin: mouse">
+      
+      <!-- 3. Marker: marker3.patt gösterildiğinde model2.glb -->
+      <a-marker type="pattern" url="pattern-ArrowUp.patt">
+        <a-entity
+          gltf-model="model/cube.glb"
+          scale="0.2 0.2 0.2"
+          position="0 0 0"
+        ></a-entity>
+      </a-marker>
 
-    <!-- Marker 1 -->
-    <a-marker type="pattern" url="pattern-marker.patt">
-      <a-entity
-        gltf-model="model/cube.gltf"
-        position="0 0.1 0"
-        scale="0.5 0.5 0.5"
-        gesture-control>
-      </a-entity>
-    </a-marker>
+      <!-- Kamera -->
+      <a-entity camera></a-entity>
+    </a-scene>
 
-    <!-- Marker 2 -->
-    <a-marker type="pattern" url="pattern-CesmeAr.patt">
-      <a-entity
-        gltf-model="model/untitled2.gltf"
-        position="0 0.15 0"
-        scale="0.2 0.2 0.2"
-        gesture-control>
-      </a-entity>
-    </a-marker>
-
-    <!-- Marker 3 -->
-    <a-marker type="pattern" url="pattern-ArrowUp.patt">
-      <a-entity
-        gltf-model="model/untitled2.glb"
-        position="0 0.1 0"
-        scale="0.3 0.3 0.3"
-        rotation="0 180 0"
-        gesture-control>
-      </a-entity>
-    </a-marker>
-
-    <!-- Kamera -->
-    <a-entity camera look-controls="enabled: false"></a-entity>
-  </a-scene>
-
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      document.querySelector('.arjs-loader').style.display = 'none';
-    });
-  </script>
-</body>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.arjs-loader').style.display = 'none';
+      });
+    </script>
+  </body>
 </html>
