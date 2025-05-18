@@ -1,135 +1,83 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8">
     <title>AR.js Çoklu Marker + Gesture</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    
-    <!-- Güncel Kütüphaneler -->
+
+    <!-- Kütüphaneler -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-gesture-detector@1.1.3/dist/aframe-gesture-detector.min.js"></script>
+    <script src="gestures.js"></script> <!-- Geliştirdiğimiz gesture kontrol -->
 
     <style>
-        .arjs-loader {
-            height: 100%;
-            width: 100%;
-            position: fixed;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-family: Arial;
-        }
-
-        a-scene {
-            touch-action: none;
-        }
+      body { margin: 0; overflow: hidden; }
+      .arjs-loader {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2em;
+        font-family: sans-serif;
+      }
     </style>
+  </head>
 
-    <!-- Geliştirilmiş Gesture Handler -->
-    <script>
-        AFRAME.registerComponent('gesture-handler', {
-            init: function() {
-                this.initialScale = this.el.getAttribute('scale').clone();
-                this.isDragging = false;
-                const el = this.el;
-
-                // Döndürme
-                el.addEventListener('onefingermove', (e) => {
-                    if(this.isDragging) return;
-                    const rotation = el.getAttribute('rotation');
-                    el.setAttribute('rotation', {
-                        y: rotation.y + e.detail.positionChange.x * 3,
-                        x: rotation.x,
-                        z: rotation.z
-                    });
-                });
-
-                // Zoom
-                el.addEventListener('twofingerstart', () => {
-                    this.scaleFactor = el.getAttribute('scale').x / this.initialScale.x;
-                });
-
-                el.addEventListener('twofingermove', (e) => {
-                    this.scaleFactor *= 1 + (e.detail.spreadChange / 200);
-                    this.scaleFactor = Math.min(Math.max(0.2, this.scaleFactor), 5);
-                    el.setAttribute('scale', {
-                        x: this.initialScale.x * this.scaleFactor,
-                        y: this.initialScale.y * this.scaleFactor,
-                        z: this.initialScale.z * this.scaleFactor
-                    });
-                });
-
-                // Taşıma
-                el.addEventListener('grab-start', () => this.isDragging = true);
-                el.addEventListener('grab-end', () => this.isDragging = false);
-                el.addEventListener('pan', (e) => {
-                    if(!this.isDragging) return;
-                    const position = el.getAttribute('position');
-                    el.setAttribute('position', {
-                        x: position.x + e.detail.deltaX * 0.01,
-                        y: position.y - e.detail.deltaY * 0.01,
-                        z: position.z
-                    });
-                });
-            }
-        });
-    </script>
-</head>
-
-<body>
-    <div class="arjs-loader">AR deneyimi başlatılıyor...</div>
+  <body>
+    <div class="arjs-loader">Yükleniyor...</div>
 
     <a-scene 
-        embedded 
-        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
-        vr-mode-ui="enabled: false"
-        gesture-detector
-        cursor="rayOrigin: mouse">
+      embedded 
+      arjs="sourceType: webcam; debugUIEnabled: false;" 
+      gesture-detector 
+      renderer="logarithmicDepthBuffer: true;" 
+      vr-mode-ui="enabled: false">
 
-        <!-- Tüm Marker'lar -->
-        <!-- Marker 1 - Ana Küp -->
-        <a-marker type="pattern" url="pattern-marker.patt">
-            <a-entity
-                gltf-model="model/cube.gltf"
-                scale="0.5 0.5 0.5"
-                position="0 0.1 0"
-                gesture-handler>
-            </a-entity>
-        </a-marker>
+      <!-- Marker 1 -->
+      <a-marker type="pattern" url="pattern-marker.patt">
+        <a-entity 
+          gltf-model="model/cube.gltf"
+          scale="0.5 0.5 0.5"
+          position="0 0.1 0"
+          gesture-control>
+        </a-entity>
+      </a-marker>
 
-        <!-- Marker 2 - Cesme Modeli -->
-        <a-marker type="pattern" url="pattern-CesmeAr.patt">
-            <a-entity
-                gltf-model="model/untitled2.gltf"
-                scale="0.2 0.2 0.2"
-                position="0 0.15 0"
-                gesture-handler>
-            </a-entity>
-        </a-marker>
+      <!-- Marker 2 -->
+      <a-marker type="pattern" url="pattern-CesmeAr.patt">
+        <a-entity 
+          gltf-model="model/untitled2.gltf"
+          scale="0.2 0.2 0.2"
+          position="0 0.1 0"
+          gesture-control>
+        </a-entity>
+      </a-marker>
 
-        <!-- Marker 3 - Ok Modeli -->
-        <a-marker type="pattern" url="pattern-ArrowUp.patt">
-            <a-entity
-                gltf-model="model/untitled2.glb"
-                scale="0.3 0.3 0.3"
-                position="0 0.1 0"
-                rotation="0 180 0"
-                gesture-handler>
-            </a-entity>
-        </a-marker>
-       
-        <!-- Kamera -->
-        <a-entity camera look-controls="enabled: false"></a-entity>
+      <!-- Marker 3 -->
+      <a-marker type="pattern" url="pattern-ArrowUp.patt">
+        <a-entity 
+          gltf-model="model/untitled2.glb"
+          scale="0.3 0.3 0.3"
+          position="0 0.1 0"
+          rotation="0 180 0"
+          gesture-control>
+        </a-entity>
+      </a-marker>
+
+      <!-- Kamera -->
+      <a-entity camera></a-entity>
     </a-scene>
 
     <script>
-        window.addEventListener('arjs-nft-loaded', () => {
-            document.querySelector('.arjs-loader').style.display = 'none';
-        });
+      window.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.arjs-loader').style.display = 'none';
+      });
     </script>
-</body>
+  </body>
 </html>
