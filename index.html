@@ -35,50 +35,44 @@
       vr-mode-ui="enabled: false"
       renderer="logarithmicDepthBuffer: true;"
     >
-      <!-- 1. Marker: marker1.patt gösterildiğinde model1.glb -->
-      <a-marker type="pattern" url="pattern-marker.patt">
+      <!-- 1. Marker: bank -->
+      <a-marker type="pattern" url="pattern-bank.patt">
         <a-entity
-          gltf-model="model/cube.glb"
-          scale="0.5 0.5 0.5"
+          gltf-model="model/bank.glb"
+          scale="0.2 0.2 0.2"
           position="0 0 0"
         ></a-entity>
       </a-marker>
 
-      <!-- 2. Marker: marker2.patt gösterildiğinde model2.glb -->
-      <a-marker type="pattern" url="pattern-CesmeAr.patt">
+      <!-- 2. Marker: seyirlik -->
+      <a-marker type="pattern" url="pattern-seyirlik.patt">
         <a-entity
-          gltf-model="model/untitled2.glb"
+          gltf-model="model/seyirlik.glb"
           scale="0.2 0.2 0.2"
           position="0 0 0"
         ></a-entity>
       </a-marker>
 
       
-      <!-- 3. Marker: marker3.patt gösterildiğinde model2.glb 
-      <a-marker type="pattern" url="pattern-ArrowUp.patt">
+      <!-- 3. Marker: kioskOpen -->
+      <a-marker type="pattern" url="pattern-kioskOpen.patt">
         <a-entity
-          gltf-model="model/cube.glb"
-          scale="0.2 0.2 0.2"
-          position="0 0 0"
-        ></a-entity>
-      </a-marker>
--->
-       <!-- 4. Marker: marker3.patt gösterildiğinde model2.glb -->
-       <a-marker type="pattern" url="pattern-ArrowUp.patt">
-        <a-entity
-          gltf-model="model/bank.glb"
-          scale="0.8 0.8 0.8"
-          position="0 0 0"
-        ></a-entity>
-      </a-marker>
-
-      <a-marker type="pattern" url="pattern-ılıca_logo.patt">
-        <a-entity
-          gltf-model="model/kiosk1.glb"
+          gltf-model="model/kioskOpen.glb"
           scale="0.6 0.6 0.6"
           position="0 0 0"
         ></a-entity>
       </a-marker>
+
+       <!-- 4. Marker: kioskClosed -->
+       <a-marker type="pattern" url="pattern-kioskClosed.patt">
+        <a-entity
+          gltf-model="model/kioskClosed.glb"
+          scale="0.6 0.6 0.6"
+          position="0 0 0"
+        ></a-entity>
+      </a-marker>
+
+  
       <!-- Kamera -->
       <a-entity camera></a-entity>
     </a-scene>
