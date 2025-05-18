@@ -1,14 +1,14 @@
 AFRAME.registerComponent('gesture-control', {
     init: function () {
-      const el = this.el;
-      this.initialScale = el.getAttribute('scale') || { x: 1, y: 1, z: 1 };
+      this.initialScale = this.el.getAttribute('scale').clone();
       this.scaleFactor = 1;
       this.isDragging = false;
+      const el = this.el;
   
       // Döndürme
       el.addEventListener('onefingermove', (e) => {
         if (this.isDragging) return;
-        const rotation = el.getAttribute('rotation') || { x: 0, y: 0, z: 0 };
+        const rotation = el.getAttribute('rotation');
         el.setAttribute('rotation', {
           x: rotation.x,
           y: rotation.y + e.detail.positionChange.x * 3,
@@ -18,8 +18,7 @@ AFRAME.registerComponent('gesture-control', {
   
       // Zoom
       el.addEventListener('twofingerstart', () => {
-        const currentScale = el.getAttribute('scale');
-        this.scaleFactor = currentScale.x / this.initialScale.x;
+        this.scaleFactor = el.getAttribute('scale').x / this.initialScale.x;
       });
   
       el.addEventListener('twofingermove', (e) => {
@@ -44,10 +43,9 @@ AFRAME.registerComponent('gesture-control', {
       el.addEventListener('pan', (e) => {
         if (!this.isDragging) return;
         const position = el.getAttribute('position');
-        const factor = 0.005;
         el.setAttribute('position', {
-          x: position.x + e.detail.deltaX * factor,
-          y: position.y - e.detail.deltaY * factor,
+          x: position.x + e.detail.deltaX * 0.005,
+          y: position.y - e.detail.deltaY * 0.005,
           z: position.z
         });
       });
